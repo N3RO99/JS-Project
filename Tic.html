@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Tic Tac Toe</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #1e272e;
+        color: #f5f6fa;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        background: #2f3640;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #00a8ff;
+    }
+
+    .board {
+        display: grid;
+        grid-template-columns: repeat(3, 120px);
+        grid-gap: 10px;
+        margin-top: 20px;
+    }
+
+    .cell {
+        width: 120px;
+        height: 120px;
+        background-color: #353b48;
+        color: #f5f6fa;
+        font-size: 2.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: transform 0.2s ease-in-out, background-color 0.3s;
+    }
+
+    .cell:hover {
+        transform: scale(1.05);
+        background-color: #40739e;
+    }
+
+    .winner {
+        color: #e1b12c;
+        animation: winner-animation 0.5s ease-in-out infinite alternate;
+    }
+
+    .message {
+        font-size: 1.2em;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .reset-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #00a8ff;
+        color: #f5f6fa;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .reset-button:hover {
+        background-color: #0097e6;
+    }
+
+    @keyframes winner-animation {
+        from {
+            transform: scale(1);
+        }
+        to {
+            transform: scale(1.1);
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Jesse's Tic Tac Toe</h1>
+    <div class="board">
+        <div class="cell" onclick="makeMove(0)"></div>
+        <div class="cell" onclick="makeMove(1)"></div>
+        <div class="cell" onclick="makeMove(2)"></div>
+        <div class="cell" onclick="makeMove(3)"></div>
+        <div class="cell" onclick="makeMove(4)"></div>
+        <div class="cell" onclick="makeMove(5)"></div>
+        <div class="cell" onclick="makeMove(6)"></div>
+        <div class="cell" onclick="makeMove(7)"></div>
+        <div class="cell" onclick="makeMove(8)"></div>
+    </div>
+    <div class="message" id="message"></div>
+    <button class="reset-button" onclick="resetGame()">Play Again</button>
+</div>
+
+<script>
+    const board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let gameActive = true;
+
+    const winningConditions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+
+    const cells = document.querySelectorAll('.cell');
+    const message = document.getElementById('message');
+
+    function makeMove(index) {
+        if (board[index] === '' && gameActive) {
+            board[index] = currentPlayer;
+            cells[index].innerText = currentPlayer;
+            cells[index].classList.add('winner');
+            checkResult();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+    }
+
+    function checkResult() {
+        let roundWon = false;
+
+        for (let i = 0; i < winningConditions.length; i++) {
+            const [a, b, c] = winningConditions[i];
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                roundWon = true;
+                cells[a].classList.add('winner');
+                cells[b].classList.add('winner');
+                cells[c].classList.add('winner');
+                break;
+            }
+        }
+
+        if (roundWon) {
+            message.innerText = `Player ${currentPlayer} Wins!`;
+            gameActive = false;
+            return;
+        }
+
+        if (!board.includes('')) {
+            message.innerText = "It's a Draw!";
+            gameActive = false;
+        }
+    }
+
+    function resetGame() {
+        board.fill('');
+        cells.forEach(cell => {
+            cell.innerText = '';
+            cell.classList.remove('winner');
+        });
+        currentPlayer = 'X';
+        gameActive = true;
+        message.innerText = '';
+    }
+</script>
+</body>
+</html>
